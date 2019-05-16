@@ -1,0 +1,13 @@
+﻿scavenger,http://www.wikidata.org/entity/Q172867,http://www.owl-ontologies.com/unnamed.owl#Scavenger 
+scavenger,http://www.wikidata.org/entity/Q172867,http://polytraits.lifewatchgreece.eu/terms/FEED_S 
+carnivore,https://www.wikidata.org/entity/Q81875,http://www.owl-ontologies.com/unnamed.owl#Primary__Carnivore
+carnivore,https://www.wikidata.org/entity/Q81875,http://eol.org/schema/terms/faunivore
+herbivore,https://www.wikidata.org/entity/Q59099,http://purl.bioontology.org/ontology/MESH/D060434
+herbivore,https://www.wikidata.org/entity/Q59099,http://www.owl-ontologies.com/unnamed.owl#Primary__Herbivore
+omnivore,https://www.wikidata.org/entity/Q164509,http://polytraits.lifewatchgreece.eu/terms/FEED_O
+omnivore,https://www.wikidata.org/entity/Q164509,http://www.owl-ontologies.com/unnamed.owl#Omnivore
+folivore,http://www.wikidata.org/entity/Q617573,http://www.owl-ontologies.com/unnamed.owl#Folivore
+frugivore,http://www.wikidata.org/entity/Q1470764,http://www.owl-ontologies.com/unnamed.owl#Frugivore
+insectivore,http://www.wikidata.org/entity/Q677088,http://eol.org/schema/terms/invertivore 
+parasite,http://www.wikidata.org/entity/Q12806437,http://purl.obolibrary.org/obo/IDO_0000526
+nectarivore,http://www.wikidata.org/entity/Q120880,http://eol.org/schema/terms/eatsNectar
