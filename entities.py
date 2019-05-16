@@ -107,4 +107,3 @@ print(habitat_mapping, "MAPPING_HABITAT")
 print("Obteniendo datos sobre taxones")
 # get_habitats("envo.owl")
 # # print(habitat_mapping, "HABITATS")
-# Comentario final
