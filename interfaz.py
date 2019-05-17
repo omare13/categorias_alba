@@ -43,17 +43,15 @@ class Aplicacion(tk.Tk):
         self.display_control()
 
     def display_tests(self):
-        if self.frame_tests is not None:
-            self.frame_tests.destroy()
         self.frame_tests = FrameTests(self)
         self.frame_tests.grid(row=0, column=0, sticky=tk.N+tk.S)
 
     def display_palabras(self):
-        if self.frame_palabras is not None:
-            self.frame_palabras.destroy()
-        print("display palabras")
-        self.frame_palabras = FramePalabras(self)
-        self.frame_palabras.grid(row=0, column=1, sticky=tk.N+tk.W)
+        if self.frame_palabras is None:
+            self.frame_palabras = FramePalabras(self)
+            self.frame_palabras.grid(row=0, column=1, sticky=tk.N+tk.W)
+        else:
+            self.frame_palabras.incluir_palabras()
 
     def display_estado(self):
         self.frame_estado = FrameEstado(self)
@@ -61,8 +59,6 @@ class Aplicacion(tk.Tk):
         print("display estado")
 
     def display_control(self):
-        if self.frame_control is not None:
-            self.frame_control.destroy()
         self.frame_control = FrameControl(self)
         self.frame_control.grid(row=1, column=0, sticky=tk.E+tk.W, columnspan=3)
 
@@ -70,6 +66,7 @@ class Aplicacion(tk.Tk):
         self.edicion = VentanaEdicionPalabra(self, palabra)
         print(palabra.__dict__)
         self.wait_window(self.edicion)
+
 
 class MenuPrincipal(tk.Menu):
     def __init__(self, parent):
@@ -252,13 +249,13 @@ class FrameTests(tk.Frame):
         self.scroll_tests.config(command=self.lista_tests.yview)
 
         # Inserto los ids de los tests en la lista
-        for i, test in enumerate(self.parent.ejecucion.tests):
+        for i, test in enumerate(self.root.ejecucion.tests):
             self.lista_tests.insert(i, str(i) + " : " + test.id)
+            self.colorear_test(i, test.estado)
 
         # Display del listado de tests
         self.lista_tests.grid(row=0, column=0, sticky=tk.N + tk.S + tk.E + tk.W)
         self.scroll_tests.grid(row=0, column=1, sticky=tk.N+tk.S)
-
 
         # Incluyo evento de selección de test para que se lance la función cada vez que haya una selección
         self.lista_tests.bind("<<ListboxSelect>>", self.seleccion_test)
@@ -267,8 +264,26 @@ class FrameTests(tk.Frame):
         print(event)
         id_test = self.lista_tests.get(self.lista_tests.curselection())
         print(id_test, "CHECK")
-        self.parent.ejecucion.test_seleccionado = int(re.split(" : ", id_test)[0])
-        self.parent.display_palabras()
+        self.root.ejecucion.test_seleccionado = int(re.split(" : ", id_test)[0])
+        self.root.display_palabras()
+
+    def actualizar_estado_test(self, test_index, estado):
+        if self.root.ejecucion.tests[test_index].estado == estado:
+            self.colorear_test(test_index, estado)
+
+    def colorear_test(self, test_index, estado):
+        if estado is None:
+            # Estado inicial del test
+            self.lista_tests.itemconfig(test_index, bg="white")
+        elif estado == 1:
+            # El test tiene todas sus palabras confirmadas
+            self.lista_tests.itemconfig(test_index, bg="green")
+        elif estado == 2:
+            # El test tiene todas las palabras procesadas, pero falta confirmación
+            self.lista_tests.itemconfig(test_index, bg="yellow")
+        elif estado == 3:
+            # El test no ha encontrado todas las palabras
+            self.lista_tests.itemconfig(test_index, bg="grey")
 
 
 class FramePalabras(tk.LabelFrame):
@@ -279,33 +294,47 @@ class FramePalabras(tk.LabelFrame):
         self.root = parent.root
 
         # Definición del área de palabras
-        seleccion = self.parent.ejecucion.test_seleccionado
-        if seleccion != None:
-            for i, palabra in enumerate(self.parent.ejecucion.tests[seleccion].palabras):
-                # Defino un recuadro para hacer display de una palabra
-                frame_palabra = FramePalabra(self, palabra)
-                frame_palabra.grid(row=math.floor(i/5), column=i % 5, sticky=tk.N+tk.W+tk.E+tk.S)
+        self.test_index = None
+        self.test_name = None
+
+        self.frames_palabras = []
+
+        for i in range(50):
+            # Defino un recuadro para hacer display de una palabra
+            frame_palabra = FramePalabra(self, i+1)
+            frame_palabra.grid(row=math.floor(i/5), column=i % 5, sticky=tk.N+tk.W+tk.E+tk.S)
+            self.frames_palabras.append(frame_palabra)
+
+    def incluir_palabras(self):
+        # Definición del área de palabras
+        self.test_index = self.root.ejecucion.test_seleccionado
+        self.test_name = self.root.ejecucion.tests[self.test_index].id
+        for i, palabra in enumerate(self.root.ejecucion.tests[self.test_index].palabras):
+            self.frames_palabras[i].actualizar_frame_palabra(palabra)
+        for i in range(len(self.root.ejecucion.tests[self.test_index].palabras), 50):
+            self.frames_palabras[i].actualizar_frame_palabra(None)
 
 
 class FramePalabra(tk.Frame):
-    def __init__(self, parent, palabra):
+    def __init__(self, parent, posicion):
         tk.Frame.__init__(self, parent)
         # Definimos el componente padre
         self.parent = parent
-        self.palabra = palabra
+        self.palabra = None
         self.root = parent.root
+        self.posicion = posicion
 
         # Definición del área de texto
-        self.label = tk.Label(self, text=palabra.texto)
+        self.label = tk.Label(self, text="LABEL")
 
         # Definición del área de color o estado
         self.estado = tk.Frame(self, width=5)
 
         # Definicón de la posición de la palabra
-        self.pos = tk.Label(self, text=str(palabra.posicion))
+        self.pos = tk.Label(self, text=self.posicion)
 
         # Definición del botón de edición
-        self.boton = tk.Button(self, text="Edit", command=self.seleccion_palabra)
+        self.boton = tk.Button(self, text="Edit", command=self.seleccion_palabra, state=tk.DISABLED)
 
         # Grids de cada parte de la palbra
         self.estado.grid(row=1, column=0, padx=5, pady=5, sticky=tk.N+tk.S)
@@ -314,20 +343,34 @@ class FramePalabra(tk.Frame):
         self.pos.grid(row=0, column=0, sticky=tk.E+tk.W, padx=5, pady=5, columnspan=3)
 
         # Configuración de colores y posibilidad de edición
-        if self.palabra.estado == 0:
-            self.estado.config(bg="black")
-            self.boton.config(state=tk.DISABLED)
-        elif self.palabra.estado == 1:
-            self.estado.config(bg="yellow")
-        elif self.palabra.estado == 2:
-            self.estado.config(bg="green")
-        elif self.palabra.estado == 3:
-            self.estado.config(bg="red")
+        self.colorear_estado(0)
 
     def seleccion_palabra(self):
         print("Selección de :" + self.palabra.texto)
-        self.parent.parent.display_edicion(self.palabra)
+        self.root.display_edicion(self.palabra)
 
+    def actualizar_frame_palabra(self, palabra):
+        self.palabra = palabra
+        if self.palabra is not None:
+            self.label.configure(text=palabra.texto)
+            self.boton.configure(state=tk.NORMAL)
+            self.pos.configure(text=palabra.posicion)
+            self.colorear_estado(palabra.estado)
+        else:
+            self.label.configure(text="N/A")
+            self.boton.configure(state=tk.DISABLED)
+            self.colorear_estado(0)
+
+    def colorear_estado(self, estado):
+        if estado == 0:
+            self.estado.config(bg="black")
+            self.boton.config(state=tk.DISABLED)
+        elif estado == 1:
+            self.estado.config(bg="yellow")
+        elif estado == 2:
+            self.estado.config(bg="green")
+        elif estado == 3:
+            self.estado.config(bg="red")
 
 class FrameEstado(tk.LabelFrame):
     def __init__(self, parent):
