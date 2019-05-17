@@ -12,20 +12,28 @@ from bson.objectid import ObjectId
 class Aplicacion(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
+        # Definimos como componente raíz para su recuperación desde cualquier componente hijo, nieto, etc.
+        self.root = self
 
         # Definir título
         self.title("Categorías Test")
 
         # Incluir menú de anotaciones
-        menu_principal = MenuPrincipal(self)
-        self.config(menu=menu_principal)
+        self.menu_principal = MenuPrincipal(self)
+        self.config(menu=self.menu_principal)
 
+        # Escala para visualizar la ventana
         self.wm_minsize(300, 100)
+
+        # Variable ejecución de control
         self.ejecucion = None
+
+        # Frames de la aplicación
         self.frame_tests = None
         self.frame_palabras = None
         self.frame_estado = None
         self.frame_control = None
+
 
     def display_ejecucion(self, ejecucion):
         self.ejecucion = ejecucion
@@ -69,6 +77,7 @@ class MenuPrincipal(tk.Menu):
 
         # Definimos el componente padre
         self.parent = parent
+        self.root = parent.root
 
         # Opciones del menú:
 
@@ -101,6 +110,7 @@ class VentanaIniciarAnotaciones(tk.Toplevel):
 
         # Definimos el componente padre
         self.parent = parent
+        self.root = parent.root
 
         # No permitimos que se interactúe con la ventana padre
         self.grab_set()
@@ -198,7 +208,8 @@ class VentanaIniciarAnotaciones(tk.Toplevel):
             # Cerrar la ventana de configuración
             self.destroy()
             # Crear los widgets de ejecución en la ventana principal
-            self.parent.parent.display_ejecucion(ejecucion)
+            # self.parent.parent.display_ejecucion(ejecucion)
+            self.root.display_ejecucion(ejecucion)
 
         else:
             print("No se puede iniciar la anotación")
@@ -219,18 +230,12 @@ class Configuracion:
         return True
 
 
-class VentanaEjecucionAnotaciones(Aplicacion):
-    def __init__(self, ejecucion):
-        Aplicacion.__init__(self)
-        label = tk.Label(self, text=ejecucion.tests[0].categoria)
-        label.grid(row=0, column=0)
-
-
 class FrameTests(tk.Frame):
     def __init__(self, parent):
         tk.Frame.__init__(self, parent, height=800)
         # Definimos el componente padre
         self.parent = parent
+        self.root = parent.root
 
         # Definición de la etiqueta de tests
         # self.label_tests = tk.Label(self, text="Lista de tests: ")
@@ -271,6 +276,7 @@ class FramePalabras(tk.LabelFrame):
         tk.LabelFrame.__init__(self, parent, text="Palabras del test")
         # Definimos el componente padre
         self.parent = parent
+        self.root = parent.root
 
         # Definición del área de palabras
         seleccion = self.parent.ejecucion.test_seleccionado
@@ -287,6 +293,7 @@ class FramePalabra(tk.Frame):
         # Definimos el componente padre
         self.parent = parent
         self.palabra = palabra
+        self.root = parent.root
 
         # Definición del área de texto
         self.label = tk.Label(self, text=palabra.texto)
@@ -327,6 +334,7 @@ class FrameEstado(tk.LabelFrame):
         tk.LabelFrame.__init__(self, parent, text="Información del progreso")
         # Definimos el componente padre
         self.parent = parent
+        self.root = parent.root
 
         self.label1 = tk.Label(self, text="Tests completos : " + str(self.parent.ejecucion.tests_completos))
         self.label2 = tk.Label(self, text="Tests incompletos : " + str(self.parent.ejecucion.tests_incompletos))
@@ -352,6 +360,7 @@ class FrameControl(tk.Frame):
         tk.Frame.__init__(self, parent)
         # Definimos el componente padre
         self.parent = parent
+        self.root = parent.root
 
         # Definición del botón de Iniciar/Pausar
         self.boton = tk.Button(self, text="Iniciar", command=self.iniciar)
@@ -388,6 +397,7 @@ class VentanaEdicionPalabra(tk.Toplevel):
         tk.Toplevel.__init__(self, parent)
         # Definición del componente padre
         self.parent = parent
+        self.root = parent.root
 
         # No permitimos que se interactúe con la ventana padre
         self.grab_set()
@@ -469,6 +479,8 @@ class FormularioPalabra(tk.Frame):
         tk.Frame.__init__(self, parent)
         # Definimos el componente padre
         self.parent = parent
+        self.root = parent.root
+
         self.labels = []
         self.campos = {}
         self.diccionario_propiedades = self.parent.parent.ejecucion.mapper.mapped_class.__dict__
@@ -558,6 +570,7 @@ class EntryIO(tk.Entry):
         tk.Entry.__init__(self, parent)
         # Definición del componente padre
         self.parent = parent
+        self.root = parent.root
 
         # Recuperamos el valor (objeto) y la clave del atributo
         self.valor = valor
@@ -579,6 +592,7 @@ class TextIO(tk.Text):
         tk.Text.__init__(self, parent, height=5, width=60, wrap=tk.WORD)
         # Definición del componente padre
         self.parent = parent
+        self.root = parent.root
 
         # Recuperamos el valor y la clave
         self.valor = valor  # Es un array de strings
@@ -602,6 +616,7 @@ class RadioIO(tk.Frame):
         tk.Frame.__init__(self, parent)
         # Definición del componente padre
         self.parent = parent
+        self.root = parent.root
 
         # Recuperamos el diccionario y la clave que le dió acceso
         self.valor = valor  # {etiqueta: e1, uri: u1}
@@ -669,6 +684,7 @@ class SingleTreeIO(tk.Entry):
         self.var = 0
 
         self.parent = parent
+        self.root = parent.root
 
         self.key = key
         self.valor = valor
@@ -683,6 +699,9 @@ class SingleTreeIO(tk.Entry):
 class MultipleTreeIO(tk.Entry):
     def __init__(self, parent, valor, key):
         tk.Entry.__init__(self, parent)
+        self.parent = parent
+        self.root = parent.root
+
         self.var = 0
 
         self.key = key
