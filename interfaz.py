@@ -429,10 +429,10 @@ class FrameControl(tk.Frame):
         # self.progreso.step(1)
 
     def step(self):
-        self.parent.ejecucion.procesar_palabra()
+        self.root.ejecucion.procesar_palabra()
         self.progreso.step(1)
-        self.parent.display_estado()
-        self.parent.display_palabras()
+        self.root.display_estado()
+        self.root.display_palabras()
 
 
 class VentanaEdicionPalabra(tk.Toplevel):
