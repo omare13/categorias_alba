@@ -490,28 +490,45 @@ class VentanaEdicionPalabra(tk.Toplevel):
 
         # obj = self.parent.ejecucion.mapper.mapped_class.query.find({"_id": schema.ObjectId(diccionario_objeto["_id"])}).first()
 
-        doc = self.parent.ejecucion.mapper.mapped_class.query.get(_id=ObjectId(diccionario_objeto["_id"]))
-        print(doc)
+        obj = {}
 
-        self.parent.ejecucion.mapper.mapped_class.query.update({"_id": doc._id},{'$set': diccionario_objeto})
-        doc = self.parent.ejecucion.session.refresh(doc)
+        if (diccionario_objeto["_id"] is not None) and (diccionario_objeto["_id"] != ""):
+            # Actualización del objeto:
 
-        print(doc)
+            # Obtengo el objeto sin actualizar, de la base de datos
+            # doc = self.root.ejecucion.mapper.mapped_class.query.get(_id=ObjectId(diccionario_objeto["_id"]))
+            # print(doc)
 
-        # for k, v in diccionario_objeto.items():
-        #     if k != "_id":
-        #         obj[k] = v
+            # Le paso el objeto actualizado para su actualización, separándolo de su id
+            obj = diccionario_objeto.copy()
+            id = diccionario_objeto.pop("_id")
+            print(diccionario_objeto)
+            print(obj)
+            self.root.ejecucion.mapper.mapped_class.query.update({"_id": ObjectId(id)},
+                                                                 {'$set': diccionario_objeto})
 
-        self.parent.ejecucion.session.flush()
+        else:
+            # Creación de nuevo objeto
+            diccionario_objeto.pop("_id")
+            doc = self.root.ejecucion.crear_objeto(diccionario_objeto["etiqueta"], diccionario_objeto["etiquetas"],
+                                                   diccionario_objeto["descripcion"], diccionario_objeto["uri"],
+                                                   self.root.ejecucion.entity)
+            for key, value in diccionario_objeto.items():
+                doc[key] = value
+                obj[key] = value
+            self.root.ejecucion.session.flush()
+            id = self.root.ejecucion.mapper.mapped_class.query.find({"etiqueta": obj["etiqueta"]}).first()._id
+            obj["_id"] = id
+
 
         # Actualizar estado de la palabra en test
-        self.parent.ejecucion.tests[self.palabra.test_index].palabras[self.palabra.posicion-1].estado = 2
-        self.parent.ejecucion.tests[self.palabra.test_index].palabras[self.palabra.posicion-1].objeto = doc
+        self.root.ejecucion.tests[self.palabra.test_index].palabras[self.palabra.posicion-1].estado = 2
+        self.root.ejecucion.tests[self.palabra.test_index].palabras[self.palabra.posicion-1].objeto = obj
 
         # Actualizar los frames de palabras, estado, control y tests
-        self.parent.display_palabras()
-        self.parent.display_estado()
-        self.parent.display_control()
+        self.root.display_palabras()
+        self.root.display_estado()
+        self.root.display_control()
 
         # Cerrar ventana
         self.destroy()
@@ -526,7 +543,7 @@ class FormularioPalabra(tk.Frame):
 
         self.labels = []
         self.campos = {}
-        self.diccionario_propiedades = self.parent.parent.ejecucion.mapper.mapped_class.__dict__
+        self.diccionario_propiedades = self.root.ejecucion.mapper.mapped_class.__dict__
 
         # El objeto mapper contiene -> mapped_class, collecion y session
         # Determinamos el modelo de datos que hay que cargar
@@ -550,17 +567,17 @@ class FormularioPalabra(tk.Frame):
         # Por cada atributo y su tipo
         for key, value in self.diccionario_propiedades.items():
             # Por cada atributo del tipo propiedad
-            if type(value)== ming.odm.property.FieldProperty:
+            if type(value) == ming.odm.property.FieldProperty:
 
                 # Obtengo el nombre del campo correspondiente al atributo
-                nombre_campo = textos.campos[self.parent.parent.ejecucion.entity].get(key)
+                nombre_campo = textos.campos[self.root.ejecucion.entity].get(key)
 
                 # Defino el label con el nombre del campo
                 label = tk.Label(self, text=nombre_campo)
                 label.grid(row=fila, column=0, sticky=tk.W, padx=5, pady=5)
 
                 # Defino el componente de entrada/salida correspondiente con el valor del atributo
-                clase_campo = textos.displays.get(self.parent.parent.ejecucion.entity).get(key)
+                clase_campo = textos.displays.get(self.root.ejecucion.entity).get(key)
 
                 valor = None
 
