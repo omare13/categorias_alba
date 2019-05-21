@@ -33,7 +33,7 @@ class Aplicacion(tk.Tk):
         self.frame_palabras = None
         self.frame_estado = None
         self.frame_control = None
-
+        self.edicion = None
 
     def display_ejecucion(self, ejecucion):
         self.ejecucion = ejecucion
@@ -87,7 +87,8 @@ class MenuPrincipal(tk.Menu):
         # Opción 2 - Botón Información
         self.add_command(label="Información", command=self.mostrar_info)
 
-    def mostrar_info(self):
+    @staticmethod
+    def mostrar_info():
         texto = text.TextoInformacion()
         messagebox.showinfo(title=texto.titulo, message=texto.descripcion)
 
@@ -372,6 +373,7 @@ class FramePalabra(tk.Frame):
         elif estado == 3:
             self.estado.config(bg="red")
 
+
 class FrameEstado(tk.LabelFrame):
     def __init__(self, parent):
         tk.LabelFrame.__init__(self, parent, text="Información del progreso")
@@ -467,7 +469,7 @@ class VentanaEdicionPalabra(tk.Toplevel):
     def habilitar_edicion(self):
         print("Habilitar edición")
         for campo in list(self.formulario.campos.values())[1:]:
-            if campo.__class__.__name__=="RadioIO":
+            if campo.__class__.__name__ == "RadioIO":
                 for radio in campo.radios:
                     radio.configure(state=tk.NORMAL)
             else:
@@ -481,30 +483,23 @@ class VentanaEdicionPalabra(tk.Toplevel):
         print("Confirmar datos")
         # Recopilar los datos de los inputs
         diccionario_objeto = self.formulario.generar_objeto()
+
         print(diccionario_objeto, "DICT OBJETO")
-
         print(diccionario_objeto["_id"], "DICT OBJETO 2")
-
-        # Guardar el objeto en la BD
-        # self.parent.ejecucion.session.update(self.parent.ejecucion.mapper.mapped_class(), {"_id": diccionario_objeto["_id"]}, {"$set": objeto}, upsert=False)
-
-        # obj = self.parent.ejecucion.mapper.mapped_class.query.find({"_id": schema.ObjectId(diccionario_objeto["_id"])}).first()
 
         obj = {}
 
         if (diccionario_objeto["_id"] is not None) and (diccionario_objeto["_id"] != ""):
             # Actualización del objeto:
-
             # Obtengo el objeto sin actualizar, de la base de datos
             # doc = self.root.ejecucion.mapper.mapped_class.query.get(_id=ObjectId(diccionario_objeto["_id"]))
             # print(doc)
-
             # Le paso el objeto actualizado para su actualización, separándolo de su id
             obj = diccionario_objeto.copy()
-            id = diccionario_objeto.pop("_id")
+            id_obj = diccionario_objeto.pop("_id")
             print(diccionario_objeto)
             print(obj)
-            self.root.ejecucion.mapper.mapped_class.query.update({"_id": ObjectId(id)},
+            self.root.ejecucion.mapper.mapped_class.query.update({"_id": ObjectId(id_obj)},
                                                                  {'$set': diccionario_objeto})
 
         else:
@@ -517,9 +512,8 @@ class VentanaEdicionPalabra(tk.Toplevel):
                 doc[key] = value
                 obj[key] = value
             self.root.ejecucion.session.flush()
-            id = self.root.ejecucion.mapper.mapped_class.query.find({"etiqueta": obj["etiqueta"]}).first()._id
-            obj["_id"] = id
-
+            id_obj = self.root.ejecucion.mapper.mapped_class.query.find({"etiqueta": obj["etiqueta"]}).first()._id
+            obj["_id"] = id_obj
 
         # Actualizar estado de la palabra en test
         self.root.ejecucion.tests[self.palabra.test_index].palabras[self.palabra.posicion-1].estado = 2
