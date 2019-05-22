@@ -472,7 +472,7 @@ class VentanaEdicionPalabra(tk.Toplevel):
             if campo.__class__.__name__ == "RadioIO":
                 for radio in campo.radios:
                     radio.configure(state=tk.NORMAL)
-            elif campo.__class__.__name__ == "SingleTreeIO":
+            elif (campo.__class__.__name__ == "SingleTreeIO") or (campo.__class__.__name__ == "MultipleTreeIO"):
                 campo.boton_arbol.configure(state=tk.NORMAL)
             else:
                 campo.configure(state=tk.NORMAL)
@@ -810,6 +810,11 @@ class MultipleTreeIO(tk.Entry):
 
         self.key = key
         self.valor = valor
+
+        self.selected_items = []
+
+        for item in valor:
+            self.selected_items.append(item["uri"])
 
         # Obtengo la taxonomía que voy a cargar
         self.taxonomia = textos.opciones[self.root.ejecucion.entity][self.key]
