@@ -40,7 +40,8 @@ displays = {entities.entity_animal: {
 opciones = {entities.entity_animal: {
                 "nivel_trofico": entities.trophic_levels_wikidata,
                 "habitat": entities.habitats_envo,
-                "taxon_comun": entities.taxons
+                "taxon_comun": entities.taxons,
+                "habitat_incluye": entities.habitats_envo
 }}
 
 

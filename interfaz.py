@@ -591,7 +591,7 @@ class FormularioPalabra(tk.Frame):
                             radio.configure(state=tk.NORMAL)
                         else:
                             radio.configure(state=tk.DISABLED)
-                elif campo.__class__.__name__ == "SingleTreeIO":
+                elif (campo.__class__.__name__ == "SingleTreeIO") or (campo.__class__.__name__ == "MultipleTreeIO"):
                     if habilitar:
                         campo.boton_arbol.configure(state=tk.NORMAL)
                     else:
@@ -750,8 +750,8 @@ class SingleTreeIO(tk.Frame):
         self.key = key
         self.valor = valor
 
-        self.selected_label = ""
-        self.selected_uri = ""
+        self.selected_label = self.valor["etiqueta"]
+        self.selected_uri = self.valor["uri"]
 
         # Obtengo la taxonomía que voy a cargar
         self.taxonomia = textos.opciones[self.root.ejecucion.entity][self.key]
@@ -759,10 +759,8 @@ class SingleTreeIO(tk.Frame):
         print(textos.opciones[self.root.ejecucion.entity], "OPCIONES")
         print(self.key, "KEY")
 
-        self.selection = tk.Entry(self)
+        self.selection = tk.Entry(self, state=tk.DISABLED)
         self.selection.grid(column=0, row=0, sticky=tk.W)
-        if self.valor["etiqueta"] != "":
-            self.selection.insert(tk.END, str(self.valor))
 
         self.boton_arbol = tk.Button(self, text="Seleccionar", command=self.mostrar_arbol)
         self.boton_arbol.grid(column=1, row=0, sticky=tk.E)
@@ -770,9 +768,12 @@ class SingleTreeIO(tk.Frame):
         self.tree = ttk.Treeview(self, columns=('habitat', 'uri', 'descripcion'), padding=2, selectmode=tk.BROWSE)
         self.tree.bind("<ButtonRelease-1>", self.seleccionar_item)
         self.poblar_arbol()
+        self.mostrar()
 
     def mostrar(self):
-        print(0)
+        self.selection.configure(state=tk.NORMAL)
+        self.selection.insert(tk.END, self.selected_label)
+        self.selection.configure(state=tk.DISABLED)
 
     def generar(self):
         return{self.key: {"etiqueta": self.selected_label, "uri": self.selected_uri}}
@@ -793,8 +794,11 @@ class SingleTreeIO(tk.Frame):
         self.selected_uri = self.tree.item(self.tree.focus())["values"][1]
         print(self.selected_label)
         print(self.selected_uri)
+        self.selection.configure(state=tk.NORMAL)
         self.selection.delete(0, tk.END)
         self.selection.insert(tk.END, self.selected_label)
+        self.selection.configure(state=tk.DISABLED)
+
 
 class MultipleTreeIO(tk.Entry):
     def __init__(self, parent, valor, key):
@@ -807,11 +811,54 @@ class MultipleTreeIO(tk.Entry):
         self.key = key
         self.valor = valor
 
+        # Obtengo la taxonomía que voy a cargar
+        self.taxonomia = textos.opciones[self.root.ejecucion.entity][self.key]
+
+        print(textos.opciones[self.root.ejecucion.entity], "OPCIONES")
+        print(self.key, "KEY")
+
+        self.selection = tk.Listbox(self, state=tk.DISABLED)
+        self.selection.grid(column=0, row=0, sticky=tk.W)
+
+        self.boton_arbol = tk.Button(self, text="Seleccionar", command=self.mostrar_arbol)
+        self.boton_arbol.grid(column=1, row=0, sticky=tk.E)
+
+        self.tree = ttk.Treeview(self, columns=('habitat', 'uri', 'descripcion'), padding=2, selectmode=tk.EXTENDED)
+        self.tree.bind("<<TreeviewSelect>>", self.seleccionar_item)
+        self.poblar_arbol()
+        self.mostrar()
+
     def mostrar(self):
-        print(0)
+        self.selection.configure(state=tk.NORMAL)
+        for item in self.valor:
+            if item["etiqueta"] != "":
+                self.selection.insert(tk.END, item["etiqueta"])
+        self.selection.configure(state=tk.DISABLED)
+
+    def mostrar_arbol(self):
+        self.tree.grid()
 
     def generar(self):
-        return {self.key: [{"etiqueta": "", "uri": ""}]}
+        valores = []
+        for item in self.selected_items:
+            print(item, "GENERATED_ITEM")
+            print(self.tree.item(item))
+            valores.append({"etiqueta": self.tree.item(item)["values"][0], "uri": self.tree.item(item)["values"][1]})
+        return {self.key: valores}
+
+    def seleccionar_item(self, event):
+        self.selected_items = self.tree.selection()
+        self.selection.configure(state=tk.NORMAL)
+        self.selection.delete(0, tk.END)
+        for selected_item in self.selected_items:
+            print(selected_item, "SELECTED_ITEM")
+            self.selection.insert(tk.END, self.tree.item(selected_item)["values"][0])
+        self.selection.configure(state=tk.DISABLED)
+
+    def poblar_arbol(self):
+        for nodo in self.taxonomia:
+            self.tree.insert(nodo["parent"], tk.END, iid=nodo["uri"], values=(nodo["label"],
+                                                                              nodo["uri"], nodo["description"]))
 
 
 # MAIN

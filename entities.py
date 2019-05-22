@@ -94,7 +94,7 @@ def taxon_from_node(grafo, nodo_base):
 
     # Obtengo el label del nodo raíz y lo añado a la taxonomía
     labels_raiz = grafo.query(query_label, initBindings={"subject": URIRef(nodo_base)})
-    label_raiz = ""
+    label_raiz = "root"
     if len(labels_raiz) > 0:
         label_raiz = sparql_result_array(labels_raiz)[0]
 
