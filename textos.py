@@ -22,8 +22,7 @@ campos = {entities.entity_animal: {
                 "habitat": "Hábitat Principal",
                 "habitat_incluye": "Hábitats",
                 "taxon_comun": "Taxón Común"
-            }
-}
+            }}
 
 displays = {entities.entity_animal: {
                 "_id": interfaz.EntryIO,
@@ -45,8 +44,7 @@ opciones = {entities.entity_animal: {
 }}
 
 
-mapeos = {entities.entity_animal:{
+mapeos = {entities.entity_animal: {
                 "nivel_trofico": entities.trophic_levels_mapping,
                 "habitat": entities.habitat_mapping
 }}
-

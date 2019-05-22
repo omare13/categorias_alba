@@ -472,6 +472,8 @@ class VentanaEdicionPalabra(tk.Toplevel):
             if campo.__class__.__name__ == "RadioIO":
                 for radio in campo.radios:
                     radio.configure(state=tk.NORMAL)
+            elif campo.__class__.__name__ == "SingleTreeIO":
+                campo.boton_arbol.configure(state=tk.NORMAL)
             else:
                 campo.configure(state=tk.NORMAL)
 
@@ -589,6 +591,11 @@ class FormularioPalabra(tk.Frame):
                             radio.configure(state=tk.NORMAL)
                         else:
                             radio.configure(state=tk.DISABLED)
+                elif campo.__class__.__name__ == "SingleTreeIO":
+                    if habilitar:
+                        campo.boton_arbol.configure(state=tk.NORMAL)
+                    else:
+                        campo.boton_arbol.configure(state=tk.DISABLED)
                 else:
                     if habilitar and key != "_id":
                         campo.configure(state=tk.NORMAL)
@@ -693,12 +700,12 @@ class RadioIO(tk.Frame):
         i = 0
 
         # Establecemos el diccionario de opciones de formulario
-        self.opciones = textos.opciones[self.parent.parent.parent.ejecucion.entity][self.key]
+        self.opciones = textos.opciones[self.root.ejecucion.entity][self.key]
 
         # Establecemos un mapeo de uris
         mapeo = None
-        if self.key in textos.mapeos[self.parent.parent.parent.ejecucion.entity].keys():
-            mapeo = textos.mapeos[self.parent.parent.parent.ejecucion.entity][self.key]
+        if self.key in textos.mapeos[self.root.ejecucion.entity].keys():
+            mapeo = textos.mapeos[self.root.ejecucion.entity][self.key]
 
         # Indicamos cúal es la uri mapeada
         uri_seleccionada = None
@@ -732,9 +739,9 @@ class RadioIO(tk.Frame):
         return {self.key: {"uri": self.radiovar.get(), "etiqueta": self.opciones.get(self.radiovar.get())}}
 
 
-class SingleTreeIO(tk.Entry):
+class SingleTreeIO(tk.Frame):
     def __init__(self, parent, valor, key):
-        tk.Entry.__init__(self, parent)
+        tk.Frame.__init__(self, parent)
         self.var = 0
 
         self.parent = parent
@@ -743,12 +750,51 @@ class SingleTreeIO(tk.Entry):
         self.key = key
         self.valor = valor
 
+        self.selected_label = ""
+        self.selected_uri = ""
+
+        # Obtengo la taxonomía que voy a cargar
+        self.taxonomia = textos.opciones[self.root.ejecucion.entity][self.key]
+
+        print(textos.opciones[self.root.ejecucion.entity], "OPCIONES")
+        print(self.key, "KEY")
+
+        self.selection = tk.Entry(self)
+        self.selection.grid(column=0, row=0, sticky=tk.W)
+        if self.valor["etiqueta"] != "":
+            self.selection.insert(tk.END, str(self.valor))
+
+        self.boton_arbol = tk.Button(self, text="Seleccionar", command=self.mostrar_arbol)
+        self.boton_arbol.grid(column=1, row=0, sticky=tk.E)
+
+        self.tree = ttk.Treeview(self, columns=('habitat', 'uri', 'descripcion'), padding=2, selectmode=tk.BROWSE)
+        self.tree.bind("<ButtonRelease-1>", self.seleccionar_item)
+        self.poblar_arbol()
+
     def mostrar(self):
         print(0)
 
     def generar(self):
-        return{self.key: {"etiqueta": "", "uri": ""}}
+        return{self.key: {"etiqueta": self.selected_label, "uri": self.selected_uri}}
 
+    def mostrar_arbol(self):
+        self.tree.grid()
+
+    def poblar_arbol(self):
+        print(self.taxonomia)
+        for nodo in self.taxonomia:
+            self.tree.insert(nodo["parent"], tk.END, iid=nodo["uri"], values=(nodo["label"],
+                                                                              nodo["uri"], nodo["description"]))
+
+    def seleccionar_item(self, evento):
+        # print(self.tree.focus())
+        # print(self.tree.item(self.tree.focus()))
+        self.selected_label = self.tree.item(self.tree.focus())["values"][0]
+        self.selected_uri = self.tree.item(self.tree.focus())["values"][1]
+        print(self.selected_label)
+        print(self.selected_uri)
+        self.selection.delete(0, tk.END)
+        self.selection.insert(tk.END, self.selected_label)
 
 class MultipleTreeIO(tk.Entry):
     def __init__(self, parent, valor, key):
