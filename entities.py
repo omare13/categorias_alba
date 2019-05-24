@@ -34,6 +34,13 @@ taxons = {"http://www.wikidata.org/entity/Q5113": "bird",
           "http://www.wikidata.org/entity/Q28521": "mustela"
           }
 
+uso_animal = {"http://www.wikidata.org/entity/Q1797813": "productive",
+              "http://www.wikidata.org/entity/Q228534": "working",
+              "http://www.wikidata.org/entity/Q622377": "pack",
+              "http://www.wikidata.org/entity/Q11637629": "draft",
+              "http://www.wikidata.org/entity/Q622852": "domesticated",
+              "http://www.wikidata.org/entity/Q39201": "mascota"}
+
 
 def get_trophic_levels(path_to_file):
     """El archivo de nivel trófico es un CSV con las columnas: label, uri preferida, uri sinónima"""

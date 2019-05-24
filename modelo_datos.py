@@ -35,6 +35,10 @@ class Animal(MappedClass):
         "etiqueta": schema.String(required=False),
         "uri": schema.String(required=False)
     }))
+    tipo_uso = FieldProperty(schema.Array(schema.Object({
+        "etiqueta": schema.String(required=False),
+        "uri": schema.String(required=False)
+    })))
 
 
 class Planta(MappedClass):

@@ -34,14 +34,17 @@ displays = {entities.entity_animal: {
                 "nivel_trofico": interfaz.RadioIO,
                 "habitat": interfaz.SingleTreeIO,
                 "habitat_incluye": interfaz.MultipleTreeIO,
-                "taxon_comun": interfaz.RadioIO
+                "taxon_comun": interfaz.RadioIO,
+                "tipo_uso": interfaz.MultipleOptionIO
 }}
+
 
 opciones = {entities.entity_animal: {
                 "nivel_trofico": entities.trophic_levels_wikidata,
                 "habitat": entities.habitats_envo,
                 "taxon_comun": entities.taxons,
-                "habitat_incluye": entities.habitats_envo
+                "habitat_incluye": entities.habitats_envo,
+                "tipo_uso": entities.uso_animal
 }}
 
 

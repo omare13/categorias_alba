@@ -178,14 +178,15 @@ class VentanaIniciarAnotaciones(tk.Toplevel):
         boton_cancelar = tk.Button(frame_acciones, text="Cancelar", command=self.cancelar)
         boton_cancelar.grid(row=0, column=1, padx=15, sticky=tk.W+tk.E)
 
-    def seleccionar_fichero(self, input_field):
+    @staticmethod
+    def seleccionar_fichero(input_field):
         fichero = filedialog.askopenfile(initialdir="/", title="Seleccionar fichero",
-                                           filetypes=(("text files", "*.txt"),))
+                                         filetypes=(("text files", "*.txt"),))
         if fichero:
             input_field.insert(0, fichero.name)
-            # print(self.configuracion.fichero.get())
 
-    def seleccionar_carpeta(self, input_field):
+    @staticmethod
+    def seleccionar_carpeta(input_field):
         n_carpeta = filedialog.askdirectory(initialdir="/", title="Seleccionar directorio")
         if n_carpeta:
             input_field.insert(0, n_carpeta)
@@ -474,6 +475,9 @@ class VentanaEdicionPalabra(tk.Toplevel):
                     radio.configure(state=tk.NORMAL)
             elif (campo.__class__.__name__ == "SingleTreeIO") or (campo.__class__.__name__ == "MultipleTreeIO"):
                 campo.boton_arbol.configure(state=tk.NORMAL)
+            elif campo.__class__.__name__ == "MultipleOptionIO":
+                for uri, checkbutton in campo.checkbuttons.items():
+                    checkbutton.configure(state=tk.NORMAL)
             else:
                 campo.configure(state=tk.NORMAL)
 
@@ -596,6 +600,12 @@ class FormularioPalabra(tk.Frame):
                         campo.boton_arbol.configure(state=tk.NORMAL)
                     else:
                         campo.boton_arbol.configure(state=tk.DISABLED)
+                elif campo.__class__.__name__ == "MultipleOptionIO":
+                    for uri, checkbutton in campo.checkbuttons.items():
+                        if habilitar and key != "_id":
+                            checkbutton.configure(state=tk.NORMAL)
+                        else:
+                            checkbutton.configure(state=tk.DISABLED)
                 else:
                     if habilitar and key != "_id":
                         campo.configure(state=tk.NORMAL)
@@ -690,6 +700,8 @@ class RadioIO(tk.Frame):
 
         # Un array con los botones
         self.radios = []
+
+        self.opciones = {}
 
         # Mostramos inicialmente
         self.mostrar()
@@ -800,9 +812,9 @@ class SingleTreeIO(tk.Frame):
         self.selection.configure(state=tk.DISABLED)
 
 
-class MultipleTreeIO(tk.Entry):
+class MultipleTreeIO(tk.Frame):
     def __init__(self, parent, valor, key):
-        tk.Entry.__init__(self, parent)
+        tk.Frame.__init__(self, parent)
         self.parent = parent
         self.root = parent.root
 
@@ -864,6 +876,46 @@ class MultipleTreeIO(tk.Entry):
         for nodo in self.taxonomia:
             self.tree.insert(nodo["parent"], tk.END, iid=nodo["uri"], values=(nodo["label"],
                                                                               nodo["uri"], nodo["description"]))
+
+
+class MultipleOptionIO(tk.Frame):
+    def __init__(self, parent, valor, key):
+        tk.Frame.__init__(self, parent)
+        self.parent = parent
+        self.root = parent.root
+
+        self.var = 0
+
+        self.key = key
+        self.valor = valor
+
+        self.checkbuttons = {}
+        self.variables = {}
+
+        self.opciones = textos.opciones[self.root.ejecucion.entity][self.key]
+
+        self.mostrar()
+
+    def mostrar(self):
+        n_elemento = 0
+        for uri, label in self.opciones.items():
+            variable = tk.IntVar()
+            checkbutton = tk.Checkbutton(self, text=label, variable=variable)
+            self.variables.update({uri: variable})
+            self.checkbuttons.update({uri: checkbutton})
+            checkbutton.grid(row=math.floor(n_elemento/3), column=n_elemento % 3)
+            n_elemento += 1
+        for elemento in self.valor:
+            if elemento["uri"] != "":
+                self.checkbuttons.get(elemento["uri"]).select()
+
+    def generar(self):
+        elements = []
+        for uri, value in self.variables.items():
+            print(uri, value, value.get())
+            if value.get() == 1:
+                elements.append({"etiqueta": self.opciones.get(uri), "uri": uri})
+        return {self.key: elements}
 
 
 # MAIN
