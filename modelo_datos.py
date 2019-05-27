@@ -47,14 +47,13 @@ class Planta(MappedClass):
     etiquetas = FieldProperty(schema.Array(schema.String))
     descripcion = FieldProperty(schema.String(if_missing=""))
     uri = FieldProperty(schema.String())
-    eol_id = FieldProperty(schema.String())
     tipo = FieldProperty(schema.Object({
-        "etiqueta": schema.String(required=True),
-        "uri": schema.String(required=True)
+        "etiqueta": schema.String(required=False),
+        "uri": schema.String(required=False)
     }))
     vegetal = FieldProperty(schema.Object({
-        "etiqueta": schema.String(required=True),
-        "uri": schema.String(required=True)
+        "etiqueta": schema.String(required=False),
+        "uri": schema.String(required=False)
     }))
 
 
@@ -65,8 +64,8 @@ class Vehiculo(MappedClass):
     descripcion = FieldProperty(schema.String(if_missing=""))
     uri = FieldProperty(schema.String())
     tipo = FieldProperty(schema.Object({
-        "etiqueta": schema.String(required=True),
-        "uri": schema.String(required=True)
+        "etiqueta": schema.String(required=False),
+        "uri": schema.String(required=False)
     }))
 
 

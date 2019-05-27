@@ -58,6 +58,12 @@ vegetales = {"http://www.wikidata.org/entity/Q20134": "leaf vegetable",
              "http://www.wikidata.org/entity/Q12533094": "eggplant",
              "http://www.wikidata.org/entity/Q145909": "legume"}
 
+tipo_vehiculos = {"http://www.wikidata.org/entity/Q1515493": "road",
+                  "http://www.wikidata.org/entity/Q350783": "rail",
+                  "http://www.wikidata.org/entity/Q16335899": "watercraft",
+                  "http://www.wikidata.org/entity/Q11436": "aircraft"}
+
+
 def get_trophic_levels(path_to_file):
     """El archivo de nivel trófico es un CSV con las columnas: label, uri preferida, uri sinónima"""
     file = io.open(path_to_file, "r", encoding="utf-8")

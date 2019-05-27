@@ -23,7 +23,22 @@ campos = {entities.entity_animal: {
                 "habitat": "Hábitat Principal",
                 "habitat_incluye": "Hábitats",
                 "taxon_comun": "Taxón Común"
-            }}
+            }, entities.entity_plant: {
+                "_id": "Identificador",
+                "etiqueta": "Etiqueta Principal",
+                "etiquetas": "Etiquetas Válidas",
+                "descripcion": "Descripción de la entidad",
+                "uri": "URI",
+                "tipo": "Tipo de planta",
+                "vegetal": "Tipo de vegetal"
+            }, entities.entity_vehicle: {
+                "_id": "Identificador",
+                "etiqueta": "Etiqueta Principal",
+                "etiquetas": "Etiquetas Válidas",
+                "descripcion": "Descripción de la entidad",
+                "uri": "URI",
+                "tipo": "Tipo de transporte",
+}}
 
 
 displays = {entities.entity_animal: {
@@ -47,6 +62,14 @@ displays = {entities.entity_animal: {
                 "uri": interfaz.EntryIO,
                 "tipo": interfaz.RadioIO,
                 "vegetal": interfaz.RadioIO
+            },
+            entities.entity_vehicle: {
+                "_id": interfaz.EntryIO,
+                "etiqueta": interfaz.EntryIO,
+                "etiquetas": interfaz.TextIO,
+                "descripcion": interfaz.EntryIO,
+                "uri": interfaz.EntryIO,
+                "tipo": interfaz.MultipleOptionIO
             }}
 
 
@@ -60,10 +83,12 @@ opciones = {entities.entity_animal: {
             entities.entity_plant: {
                 "tipo": entities.tipo_plantas,
                 "vegetal": entities.vegetales
+            },
+            entities.entity_vehicle: {
+                "tipo": entities.tipo_vehiculos
             }}
 
 
 mapeos = {entities.entity_animal: {
                 "nivel_trofico": entities.trophic_levels_mapping,
-                "habitat": entities.habitat_mapping
-}}
+                "habitat": entities.habitat_mapping}, entities.entity_plant: {}, entities.entity_vehicle: {}}
