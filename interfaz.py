@@ -1,11 +1,10 @@
 import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
-import textos as text
+import textos
 import tester
 import re
 import math
 import ming
-import textos
 from bson.objectid import ObjectId
 
 
@@ -89,7 +88,7 @@ class MenuPrincipal(tk.Menu):
 
     @staticmethod
     def mostrar_info():
-        texto = text.TextoInformacion()
+        texto = textos.TextoInformacion()
         messagebox.showinfo(title=texto.titulo, message=texto.descripcion)
 
     def mostrar_inicio(self):
@@ -518,7 +517,7 @@ class VentanaEdicionPalabra(tk.Toplevel):
                 doc[key] = value
                 obj[key] = value
             self.root.ejecucion.session.flush()
-            id_obj = self.root.ejecucion.mapper.mapped_class.query.find({"etiqueta": obj["etiqueta"]}).first()._id
+            id_obj = self.root.ejecucion.mapper.mapped_class.query.find({"etiqueta": obj["etiqueta"]}).first()["_id"]
             obj["_id"] = id_obj
 
         # Actualizar estado de la palabra en test
@@ -612,7 +611,6 @@ class FormularioPalabra(tk.Frame):
                     else:
                         campo.configure(state=tk.DISABLED)
 
-
                 # Añadimos los objetos visuales por si necesitamos acceder a ellos
                 self.campos.update({key: campo})
                 self.labels.append(label)
@@ -634,6 +632,7 @@ class FormularioPalabra(tk.Frame):
 
         print(datos)
         return datos
+
 
 class EntryIO(tk.Entry):
     """Tipo de clase entry con método de input/output para una etiqueta"""

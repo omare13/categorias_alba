@@ -11,6 +11,7 @@ class TextoInformacion:
 regex_fichero = r'^([a-zA-Z]\:|\\\\[^\/\\:*?"<>|]+\\[^\/\\:*?"<>|]+)(\\[^\/\\:*?"<>|]+)+(\.[^\/\\:*?"<>|]+)$'
 regex_carpeta = r'^(?:\.{2})?(?:\/\.{2})*(\/[a-zA-Z0-9]+)+$'
 
+
 campos = {entities.entity_animal: {
                 "_id": "Identificador",
                 "etiqueta": "Etiqueta Principal",
@@ -24,6 +25,7 @@ campos = {entities.entity_animal: {
                 "taxon_comun": "Taxón Común"
             }}
 
+
 displays = {entities.entity_animal: {
                 "_id": interfaz.EntryIO,
                 "etiqueta": interfaz.EntryIO,
@@ -36,7 +38,16 @@ displays = {entities.entity_animal: {
                 "habitat_incluye": interfaz.MultipleTreeIO,
                 "taxon_comun": interfaz.RadioIO,
                 "tipo_uso": interfaz.MultipleOptionIO
-}}
+            },
+            entities.entity_plant: {
+                "_id": interfaz.EntryIO,
+                "etiqueta": interfaz.EntryIO,
+                "etiquetas": interfaz.TextIO,
+                "descripcion": interfaz.EntryIO,
+                "uri": interfaz.EntryIO,
+                "tipo": interfaz.RadioIO,
+                "vegetal": interfaz.RadioIO
+            }}
 
 
 opciones = {entities.entity_animal: {
@@ -45,7 +56,11 @@ opciones = {entities.entity_animal: {
                 "taxon_comun": entities.taxons,
                 "habitat_incluye": entities.habitats_envo,
                 "tipo_uso": entities.uso_animal
-}}
+            },
+            entities.entity_plant: {
+                "tipo": entities.tipo_plantas,
+                "vegetal": entities.vegetales
+            }}
 
 
 mapeos = {entities.entity_animal: {

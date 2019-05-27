@@ -30,7 +30,7 @@ class EjecucionAnotacion:
         self.mapper = None
         self.entity = None
         self.estadistica_ejecucion()
-        self.conectar_db(self.configuracion.bd.get())
+        self.conectar_db()
 
     def estadistica_ejecucion(self):
         n_tests_completos = 0
@@ -44,6 +44,7 @@ class EjecucionAnotacion:
         dist_pal_procesadas = []
 
         for test in self.tests:
+            print(test)
             incompleto = False
             for palabra in test.palabras:
                 if palabra.texto not in dist_pal:
@@ -88,14 +89,18 @@ class EjecucionAnotacion:
         tests = []
         fichero = io.open(self.configuracion.fichero.get(), "r", encoding="UTF-8")
         for i, linea in enumerate(fichero.readlines()):
+            # print(linea)
             tests.append(Test(linea, self.configuracion.categoria.get(), i))
         fichero.close()
         return tests
 
-    def conectar_db(self, mongodb_url):
+    def conectar_db(self):
+        mongodb_url = self.configuracion.bd.get()
         if len(mongodb_url) == 0:
+            # print("Conectando con mongoDB por defecto (mongodb://localhost:27017/db)")
             self.session = ODMSession(bind=create_datastore("mongodb://localhost:27017/db"))
         else:
+            # print("Conectando con mongoDB para la dirección: " + mongodb_url)
             self.session = ODMSession(bind=create_datastore(mongodb_url))
 
         if self.configuracion.categoria.get() == 0:
@@ -142,9 +147,9 @@ class EjecucionAnotacion:
                 objeto = None
                 for label, entity_uri in resultados.items():
                     descripcion = wikidata.get_description(entity_uri)
-                    print(descripcion)
+                    # print(descripcion)
                     labels = wikidata.get_labels(entity_uri)
-                    print(labels)
+                    # print(labels)
                     objeto = self.crear_objeto(etiqueta=etiqueta, etiquetas=labels, descripcion=descripcion,
                                           categoria=self.entity, uri=entity_uri)
                     # subcategorias = wikidata.get_subcategories(entity_uri, self.entity)
@@ -209,6 +214,7 @@ class Test:
             self.estado = estado
             self.categoria = categoria
         else:
+            print("N/A")
             self.estado = "N/A"
 
 
@@ -221,6 +227,7 @@ class Palabra:
         self.estado = estado
         self.test_index = test_index
         self.objeto = objeto
+
 
 class Fichero:
     def __init__(self, ruta_fichero):

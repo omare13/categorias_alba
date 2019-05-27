@@ -14,6 +14,20 @@ query_animal_use = "ASK WHERE { <#SPECIE#> ?pred ?tipo. ?tipo wdt:P171* ?parent.
 query_ask_common = 'ASK WHERE{ <#SPECIE#> wdt:P31 wd:Q55983715. }'
 query_parent_classes_taxon = 'SELECT DISTINCT ?taxon WHERE { <#SPECIE#> wdt:P279* ?taxon. ?taxon wdt:P31 wd:Q16521. }'
 
+# Subcategorías de plantas
+query_tipo_planta_1 = "ASK WHERE{ <#ENTITY#> ?instancia_o_subclase #TYPE#. VALUES ?instancia_o_subclase {wdt:P31 wdt:P279} }"
+query_tipo_planta_2 = "ASK WHERE{ <#ENTITY#> wdt:P171* ?taxon. ?taxon ?instancia_o_subclase #TYPE#. " \
+                      "VALUES ?instancia_o_subclase {wdt:P31 wdt:P279} }"
+query_tipo_planta_3 = "ASK WHERE{ <#ENTITY#> wdt:P1582 ?taxon. ?taxon wdt:P171* ?taxon_padre. " \
+                      "?taxon_padre ?instancia_o_subclase #TYPE#. VALUES ?instancia_o_subclase {wdt:P31 wdt:P279} }"
+query_tipo_planta_4 = "ASK WHERE{ <#ENTITY> wdt:P279* #TYPE# }"
+
+query_ask_planta_1 = "ASK WHERE{ <#ENTITY#> wdt:P171* #TYPE#} "
+query_ask_planta_2 = "ASK WHERE{ <#ENTITY#> wdt:P1582 ?taxon. ?taxon wdt:P171* #TYPE#}"
+query_ask_planta_3 = "ASk WHERE{ <#ENTITY#> wdt:P279* #TYPE#}"
+query_ask_planta_4 = "ASK WHERE { <#ENTITY#> wdt:P171* ?tipo. ?tipo wdt:P279* #TYPE#}"
+query_ask_planta_5 = "ASK WHERE { <#ENTITY#> wdt:P1582 ?taxon. ?taxon wdt:P171* ?tipo. ?tipo wdt:P279* #TYPE#}"
+
 # Categoría de vehículos
 query_ask_transport_1 = "ASK WHERE {<#VEHICLE#> wdt:P31 ?clase. ?clase wdt:P279* wd:Q334166.}"
 query_ask_transport_2 = "ASK WHERE {<#VEHICLE#> wdt:P31 wd:Q334166.}"

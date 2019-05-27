@@ -52,6 +52,10 @@ class Planta(MappedClass):
         "etiqueta": schema.String(required=True),
         "uri": schema.String(required=True)
     }))
+    vegetal = FieldProperty(schema.Object({
+        "etiqueta": schema.String(required=True),
+        "uri": schema.String(required=True)
+    }))
 
 
 class Vehiculo(MappedClass):

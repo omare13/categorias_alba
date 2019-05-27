@@ -41,6 +41,22 @@ uso_animal = {"http://www.wikidata.org/entity/Q1797813": "productive",
               "http://www.wikidata.org/entity/Q622852": "domesticated",
               "http://www.wikidata.org/entity/Q39201": "mascota"}
 
+tipo_plantas = {"http://www.wikidata.org/entity/Q764": "fungus",
+                "http://www.wikidata.org/entity/Q10884": "tree",
+                "http://www.wikidata.org/entity/Q42295": "shrub",
+                "http://www.wikidata.org/entity/Q1364": "fruit",
+                "http://www.wikidata.org/entity/Q506": "flower",
+                "http://www.wikidata.org/entity/Q11004": "vegetable",
+                "http://www.wikidata.org/entity/Q207123": "herb",
+                "http://www.wikidata.org/entity/Q917284": "climbing plant",
+                "http://www.wikidata.org/entity/Q40763": "seed"}
+
+vegetales = {"http://www.wikidata.org/entity/Q20134": "leaf vegetable",
+             "http://www.wikidata.org/entity/Q20136": "root vegetable",
+             "http://www.wikidata.org/entity/Q244599": "bulb vegetable",
+             "http://www.wikidata.org/entity/Q3314483": "fruits",
+             "http://www.wikidata.org/entity/Q12533094": "eggplant",
+             "http://www.wikidata.org/entity/Q145909": "legume"}
 
 def get_trophic_levels(path_to_file):
     """El archivo de nivel trófico es un CSV con las columnas: label, uri preferida, uri sinónima"""
@@ -152,21 +168,25 @@ def taxon_from_node(grafo, nodo_base):
 
     return taxon
 
+
 def sparql_result_array(sparqlresult):
     results = []
     for row in sparqlresult:
         results.append(row[0])
     return results
 
+
 # Main
-print("Obteniendo datos sobre nivel trófico")
-get_trophic_levels("trophic_levels.csv")
-print(trophic_levels_mapping, "MAPPING_TROPHIC")
-print(trophic_levels_wikidata, "WIKI")
+# print("Obteniendo datos sobre nivel trófico")
+# get_trophic_levels("trophic_levels.csv")
+# print(trophic_levels_mapping, "MAPPING_TROPHIC")
+# print(trophic_levels_wikidata, "WIKI")
 print("Obteniendo datos sobre hábitats")
-get_habitat_mappings("habitat_synonyms.csv")
-print(habitat_mapping, "MAPPING_HABITAT")
+# get_habitat_mappings("habitat_synonyms.csv")
+# print(habitat_mapping, "MAPPING_HABITAT")
 # print(habitat_mapping, "HABITATS")
 print("Obteniendo taxonomía de hábitats ENVO")
-habitats_envo = get_habitats("envo.owl")  # un árbol del tipo [{label:"biome", uri="http://uri.org/biom", hijos:[uri1, uri2, ...]},{}]
-print(habitats_envo, "TAXON!!")
+# habitats_envo = get_habitats("envo.owl")  # un árbol del tipo [{label:"biome", uri="http://uri.org/biom"
+habitats_envo = {}
+# , hijos:[uri1, uri2, ...]},{}]
+# print(habitats_envo, "TAXON!!")

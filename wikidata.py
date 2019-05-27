@@ -106,6 +106,7 @@ def is_zoological_category(entity_uri, category_uri):
 def is_category(entity_uri, category_entity):
     query = re.sub("#SPECIE#", entity_uri, queries.query_ask)
     query = re.sub("#ENTITY#", category_entity, query)
+    print(query)
     results = execute_sparql_query(query)
     result = results['boolean']
     return bool(result)
@@ -120,6 +121,7 @@ def is_common_name_specie(entity_uri):
 
 def is_product_of_category(entity_uri, category_entity):
     query = re.sub("#ENTITY#", entity_uri, queries.query_product)
+    print(query)
     results = execute_sparql_query(query)
     if len(results["results"]["bindings"]) > 0:
         for result in results["results"]["bindings"]:
@@ -132,6 +134,7 @@ def is_product_of_category(entity_uri, category_entity):
 def is_subclass_of_category(entity_uri, category_entity):
     query = re.sub("#SPECIE#", entity_uri, queries.query_subclass)
     query = re.sub("#ENTITY#", category_entity, query)
+    print(query)
     results = execute_sparql_query(query)
     result = results['boolean']
     return bool(result)
@@ -210,6 +213,29 @@ def is_clothing(entity_uri):
     return False
 
 
+def is_type_of_plant(entity_uri, entity_id):
+    for query_planta in [queries.query_tipo_planta_1, queries.query_tipo_planta_2, queries.query_tipo_planta_3,
+                         queries.query_tipo_planta_4]:
+        query = re.sub("#ENTITY#", entity_uri, query_planta)
+        query = re.sub("#TYPE#", entity_id, query)
+        results = execute_sparql_query(query)
+        result = results['boolean']
+        if bool(result):
+            return True
+
+
+def is_plant_category(entity_uri, entity_id):
+    for query_planta in [queries.query_ask_planta_1, queries.query_ask_planta_2,
+                         queries.query_ask_planta_3, queries.query_ask_planta_4,
+                         queries.query_ask_planta_5]:
+        query = re.sub("#ENTITY#", entity_uri, query_planta)
+        query = re.sub("#TYPE#", entity_id, query)
+        results = execute_sparql_query(query)
+        result = results['boolean']
+        if bool(result):
+            return True
+
+
 def search_wikidata_plant(term, category_entity):
     variants = get_variants(term)
     # print(variants)
@@ -219,11 +245,15 @@ def search_wikidata_plant(term, category_entity):
         if len(results["results"]["bindings"]) > 0:
             for result in results["results"]["bindings"]:
                 entity_uri = result["specie"]["value"]
+                print("Es planta " + entity_uri + " ?")
                 if is_category(entity_uri, category_entity):
+                    print("IN")
                     return {term: entity_uri}
                 elif is_product_of_category(entity_uri, category_entity):
+                    print("IN")
                     return {term: entity_uri}
                 elif is_subclass_of_category(entity_uri, category_entity):
+
                     return {term: entity_uri}
     return None
 
@@ -302,6 +332,47 @@ def search_wikidata_animal(term, category_entity):
                 #     return {term: entity_uri}
 
     return None
+
+
+def get_plant_subcategories(entity_uri):
+    subcategorias_planta = type_of_plant(entity_uri)
+    subcategorias_vegetal = type_of_vegetable(entity_uri)
+
+
+def type_of_plant(entity_uri):
+    types = {}
+    tipos_planta = {"wd:Q10884": "tree", "wd:Q42295": "shrub",
+                    "wd:Q1364": "fruit", "wd:Q506": "flower", "wd:Q11004": "vegetable", "wd:Q207123": "herb",
+                    "wd:Q917284": "climbing plant", "wd:Q40763": "seed"}
+    tipos_taxon = {"wd:Q764": "fungus"}
+
+    for entity_id, entity_name in tipos_taxon.items():
+        if is_plant_category(entity_uri, entity_id):
+            types.update({entity_id: 1})
+        else:
+            types.update({entity_id: 0})
+
+    for entity_id, entity_name in tipos_planta.items():
+        if is_type_of_plant(entity_uri, entity_id):
+            types.update({entity_id: 1})
+        else:
+            types.update({entity_id: 0})
+
+    return types
+
+
+def type_of_vegetable(entity_uri):
+    types = None
+    tipos_vegetal = {"wd:Q20134": "leaf vegetable", "wd:Q20136": "root vegetable", "wd:Q244599": "bulb vegetable",
+                     "wd:Q3314483": "fruits", "wd:Q12533094": "eggplant", "wd:Q145909": "legume"}
+
+    for entity_id, entity_name in tipos_vegetal.items():
+        if is_type_of_plant(entity_uri, entity_id):
+            types.update({entity_id: 1})
+        else:
+            types.update({entity_id: 0})
+
+    return types
 
 
 def get_animal_subcategories(entity_uri):
@@ -409,6 +480,8 @@ def get_labels(entity_uri):
 def get_subcategories(entity_uri, category_entity):
     if category_entity == entities.entity_animal:
         return get_animal_subcategories(entity_uri)
+    elif category_entity == entities.entity_plant:
+        return get_plant_subcategories(entity_uri)
 
 
 loaded_lemmas = get_lemmas("lemmatization-es.txt")
