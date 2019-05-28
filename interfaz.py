@@ -42,8 +42,11 @@ class Aplicacion(tk.Tk):
         self.display_control()
 
     def display_tests(self):
-        self.frame_tests = FrameTests(self)
-        self.frame_tests.grid(row=0, column=0, sticky=tk.N+tk.S)
+       if self.frame_tests is None:
+            self.frame_tests = FrameTests(self)
+            self.frame_tests.grid(row=0, column=0, sticky=tk.N+tk.S)
+       else:
+           self.frame_tests.actualizar_tests()
 
     def display_palabras(self):
         if self.frame_palabras is None:
