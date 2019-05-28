@@ -108,4 +108,4 @@ opciones = {entities.entity_animal: {
 
 mapeos = {entities.entity_animal: {
                 "nivel_trofico": entities.trophic_levels_mapping,
-                "habitat": entities.habitat_mapping}, entities.entity_plant: {}, entities.entity_vehicle: {},entities.entity_clothing: {}}
+                "habitat": entities.habitat_mapping}, entities.entity_plant: {}, entities.entity_vehicle: {}, entities.entity_clothing: {}}

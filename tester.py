@@ -152,8 +152,9 @@ class EjecucionAnotacion:
                     # print(labels)
                     objeto = self.crear_objeto(etiqueta=etiqueta, etiquetas=labels, descripcion=descripcion,
                                           categoria=self.entity, uri=entity_uri)
-                    # subcategorias = wikidata.get_subcategories(entity_uri, self.entity)
-                    # print(subcategorias)
+                    subcategorias = wikidata.get_subcategories(entity_uri, self.entity)
+                    print(subcategorias)
+                    # TODO - Incluir procesado de subcategorías --> Se deberían pasar los objetos según modelo datos?
                 self.tests[self.current_test].palabras[self.current_palabra].objeto = objeto
                 self.tests[self.current_test].palabras[self.current_palabra].estado = 1
             else:

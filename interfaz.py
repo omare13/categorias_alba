@@ -159,11 +159,11 @@ class VentanaIniciarAnotaciones(tk.Toplevel):
         radio_plantas = tk.Radiobutton(frame_categorias, text="Plantas", variable=self.configuracion.categoria, value=1)
         radio_plantas.grid(row=0, column=1, sticky=tk.E+tk.W)
 
-        radio_ropa = tk.Radiobutton(frame_categorias, text="Ropa", variable=self.configuracion.categoria, value=2)
+        radio_ropa = tk.Radiobutton(frame_categorias, text="Ropa", variable=self.configuracion.categoria, value=3)
         radio_ropa.grid(row=0, column=2, sticky=tk.E+tk.W)
 
         radio_vehiculos = tk.Radiobutton(frame_categorias, text="Vehículos", variable=self.configuracion.categoria,
-                                         value=3)
+                                         value=2)
         radio_vehiculos.grid(row=0, column=3, sticky=tk.E+tk.W)
 
         # Botones de acción
@@ -578,7 +578,7 @@ class FormularioPalabra(tk.Frame):
                 # Defino el componente de entrada/salida correspondiente con el valor del atributo
                 clase_campo = textos.displays.get(self.root.ejecucion.entity).get(key)
 
-                valor = None
+                valor = {}
 
                 print("Mostrar formulario para objeto : ", objeto)
 
