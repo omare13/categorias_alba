@@ -63,10 +63,10 @@ class Vehiculo(MappedClass):
     etiquetas = FieldProperty(schema.Array(schema.String))
     descripcion = FieldProperty(schema.String(if_missing=""))
     uri = FieldProperty(schema.String())
-    tipo = FieldProperty(schema.Object({
+    tipo = FieldProperty(schema.Array(schema.Object({
         "etiqueta": schema.String(required=False),
         "uri": schema.String(required=False)
-    }))
+    })))
 
 
 class Prenda(MappedClass):
@@ -75,10 +75,10 @@ class Prenda(MappedClass):
     etiquetas = FieldProperty(schema.Array(schema.String))
     descripcion = FieldProperty(schema.String(if_missing=""))
     uri = FieldProperty(schema.String())
-    tipo = FieldProperty(schema.Object({
+    tipo = FieldProperty(schema.Array(schema.Object({
         "etiqueta": schema.String(required=False),
         "uri": schema.String(required=False)
-    }))
+    })))
 
 
 # Al final del modelo de datos, se debe llamar a la compilación del mapeado

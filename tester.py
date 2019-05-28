@@ -190,6 +190,28 @@ class EjecucionAnotacion:
         obj.descipcion = descripcion
         return obj
 
+    def actualizar_palabras(self, etiqueta, estado, objeto):
+        for test in self.tests:
+            for palabra in test.palabras:
+                if palabra.texto == etiqueta:
+                    palabra.estado = estado
+                    palabra.objeto = objeto
+
+    def actualizar_tests(self):
+        for test in self.tests:
+            inicial = True
+            intermedio = False
+            for palabra in test.palabras:
+                if palabra.estado != 0:
+                    inicial = False
+                if (palabra.estado == 1) or (palabra.estado == 3):
+                    intermedio = True
+            if inicial:
+                test.estado = 0
+            elif intermedio:
+                test.estado = 1
+            else:
+                test.estado = 3
 
 class Test:
     def __init__(self, linea, categoria, test_index, estado=None):

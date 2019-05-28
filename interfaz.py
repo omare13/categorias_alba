@@ -272,19 +272,20 @@ class FrameTests(tk.Frame):
         if self.root.ejecucion.tests[test_index].estado == estado:
             self.colorear_test(test_index, estado)
 
+    def actualizar_tests(self):
+        for test in self.root.ejecucion.tests:
+            self.colorear_test(test.id, test.estado)
+
     def colorear_test(self, test_index, estado):
-        if estado is None:
+        if (estado == 0) or (estado is None):
             # Estado inicial del test
             self.lista_tests.itemconfig(test_index, bg="white")
         elif estado == 1:
-            # El test tiene todas sus palabras confirmadas
-            self.lista_tests.itemconfig(test_index, bg="green")
-        elif estado == 2:
-            # El test tiene todas las palabras procesadas, pero falta confirmación
+            # El test ha sido comenzado
             self.lista_tests.itemconfig(test_index, bg="yellow")
-        elif estado == 3:
-            # El test no ha encontrado todas las palabras
-            self.lista_tests.itemconfig(test_index, bg="grey")
+        elif estado == 2:
+            # El test ha sido completado
+            self.lista_tests.itemconfig(test_index, bg="green")
 
 
 class FramePalabras(tk.LabelFrame):
@@ -524,6 +525,11 @@ class VentanaEdicionPalabra(tk.Toplevel):
         self.root.ejecucion.tests[self.palabra.test_index].palabras[self.palabra.posicion-1].estado = 2
         self.root.ejecucion.tests[self.palabra.test_index].palabras[self.palabra.posicion-1].objeto = obj
 
+        # Actualizar estado de la palabra en todos los tests
+        self.root.ejecucion.actualizar_palabras(
+            self.root.ejecucion.tests[self.palabra.test_index].palabras[self.palabra.posicion-1].texto, 2, obj)
+        self.root.ejecucion.actualizar_tests()
+
         # Actualizar los frames de palabras, estado, control y tests
         self.root.display_palabras()
         self.root.display_estado()
@@ -584,7 +590,8 @@ class FormularioPalabra(tk.Frame):
 
                 if objeto:
                     valor = objeto[key]
-                print(key)
+                print(key, "KEY!")
+                print(objeto, "OBJETO!")
                 campo = clase_campo(parent=self, valor=valor, key=key)
                 campo.grid(row=fila, column=1, sticky=tk.E, padx=5, pady=5)
 
@@ -905,8 +912,11 @@ class MultipleOptionIO(tk.Frame):
             self.checkbuttons.update({uri: checkbutton})
             checkbutton.grid(row=math.floor(n_elemento/3), column=n_elemento % 3)
             n_elemento += 1
+            print(self.valor, "VALOR!")
+
         for elemento in self.valor:
-            if elemento["uri"] != "":
+            print(elemento, "ELEMENTO!")
+            if (elemento["uri"] != "") and (elemento["uri"] is not None):
                 self.checkbuttons.get(elemento["uri"]).select()
 
     def generar(self):
