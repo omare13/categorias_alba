@@ -584,6 +584,7 @@ class FormularioPalabra(tk.Frame):
 
                 if objeto:
                     valor = objeto[key]
+                print(key)
                 campo = clase_campo(parent=self, valor=valor, key=key)
                 campo.grid(row=fila, column=1, sticky=tk.E, padx=5, pady=5)
 

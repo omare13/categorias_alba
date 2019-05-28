@@ -83,7 +83,8 @@ displays = {entities.entity_animal: {
                 "etiqueta": interfaz.EntryIO,
                 "etiquetas": interfaz.TextIO,
                 "descripcion": interfaz.EntryIO,
-                "tipo": interfaz.RadioIO
+                "uri": interfaz.EntryIO,
+                "tipo": interfaz.MultipleOptionIO
             }}
 
 

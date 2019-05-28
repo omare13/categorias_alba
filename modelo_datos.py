@@ -76,8 +76,8 @@ class Prenda(MappedClass):
     descripcion = FieldProperty(schema.String(if_missing=""))
     uri = FieldProperty(schema.String())
     tipo = FieldProperty(schema.Object({
-        "etiqueta": schema.String(required=True),
-        "uri": schema.String(required=True)
+        "etiqueta": schema.String(required=False),
+        "uri": schema.String(required=False)
     }))
 
 
