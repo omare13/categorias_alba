@@ -42,11 +42,11 @@ class Aplicacion(tk.Tk):
         self.display_control()
 
     def display_tests(self):
-       if self.frame_tests is None:
+        if self.frame_tests is None:
             self.frame_tests = FrameTests(self)
             self.frame_tests.grid(row=0, column=0, sticky=tk.N+tk.S)
-       else:
-           self.frame_tests.actualizar_tests()
+        else:
+            self.frame_tests.actualizar_tests()
 
     def display_palabras(self):
         if self.frame_palabras is None:
@@ -278,6 +278,7 @@ class FrameTests(tk.Frame):
     def actualizar_tests(self):
         for test in self.root.ejecucion.tests:
             self.colorear_test(test.id, test.estado)
+            print(test.id, "TEST ID!")
 
     def colorear_test(self, test_index, estado):
         if (estado == 0) or (estado is None):
@@ -537,6 +538,7 @@ class VentanaEdicionPalabra(tk.Toplevel):
         self.root.display_palabras()
         self.root.display_estado()
         self.root.display_control()
+        self.root.display_tests()
 
         # Cerrar ventana
         self.destroy()
