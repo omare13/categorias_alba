@@ -63,6 +63,14 @@ tipo_vehiculos = {"http://www.wikidata.org/entity/Q1515493": "road",
                   "http://www.wikidata.org/entity/Q16335899": "watercraft",
                   "http://www.wikidata.org/entity/Q11436": "aircraft"}
 
+tipo_prendas = {"http://www.wikidata.org/entity/Q198763": "underwear",
+                "http://www.wikidata.org/entity/Q14952": "headgear",
+                "http://www.wikidata.org/entity/Q645292": "sportswear",
+                "http://www.wikidata.org/entity/Q4388799": "outerwear",
+                "http://www.wikidata.org/entity/Q7434": "uniform",
+                "http://www.wikidata.org/entity/Q1065579": "costume accessory",
+                "http://www.wikidata.org/entity/Q9053464": "costume"}
+
 
 def get_trophic_levels(path_to_file):
     """El archivo de nivel trófico es un CSV con las columnas: label, uri preferida, uri sinónima"""

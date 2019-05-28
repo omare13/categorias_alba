@@ -38,6 +38,13 @@ campos = {entities.entity_animal: {
                 "descripcion": "Descripción de la entidad",
                 "uri": "URI",
                 "tipo": "Tipo de transporte",
+            }, entities.entity_clothing: {
+                "_id": "Identificador",
+                "etiqueta": "Etiqueta Principal",
+                "etiquetas": "Etiquetas Válidas",
+                "descripcion": "Descripción de la entidad",
+                "uri": "URI",
+                "tipo": "Tipo de prenda"
 }}
 
 
@@ -70,6 +77,13 @@ displays = {entities.entity_animal: {
                 "descripcion": interfaz.EntryIO,
                 "uri": interfaz.EntryIO,
                 "tipo": interfaz.MultipleOptionIO
+            },
+            entities.entity_clothing: {
+                "_id": interfaz.EntryIO,
+                "etiqueta": interfaz.EntryIO,
+                "etiquetas": interfaz.TextIO,
+                "descripcion": interfaz.EntryIO,
+                "tipo": interfaz.RadioIO
             }}
 
 
@@ -86,9 +100,12 @@ opciones = {entities.entity_animal: {
             },
             entities.entity_vehicle: {
                 "tipo": entities.tipo_vehiculos
+            },
+            entities.entity_clothing: {
+                "tipo": entities.tipo_prendas
             }}
 
 
 mapeos = {entities.entity_animal: {
                 "nivel_trofico": entities.trophic_levels_mapping,
-                "habitat": entities.habitat_mapping}, entities.entity_plant: {}, entities.entity_vehicle: {}}
+                "habitat": entities.habitat_mapping}, entities.entity_plant: {}, entities.entity_vehicle: {},entities.entity_clothing: {}}

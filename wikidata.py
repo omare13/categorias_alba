@@ -334,9 +334,76 @@ def search_wikidata_animal(term, category_entity):
     return None
 
 
+def get_clothing_subcategories(entity_uri):
+    subcategorias_ropa = type_of_clothing(entity_uri)
+    print(subcategorias_ropa)
+
+
+def type_of_clothing(entity_uri):
+    types = {}
+    tipos_prendas = {"wd:Q198763": "underwear",
+                     "wd:Q14952": "headgear",
+                     "wd:Q645292": "sportswear",
+                     "wd:Q4388799": "outerwear",
+                     "wd:Q7434": "uniform",
+                     "wd:Q1065579": "costume accessory",
+                     "wd:Q9053464": "costume"}
+
+    for entity_id, entity_name in tipos_prendas.items():
+        if is_clothing_category(entity_uri, entity_id):
+            types.update({entity_id: 1})
+        else:
+            types.update({entity_id: 0})
+
+    return types
+
+
+def is_clothing_category(entity_uri, entity_id):
+    for query_clothing in [queries.query_tipo_ropa_1, queries.query_tipo_ropa_2, queries.query_tipo_ropa_3]:
+        query = re.sub("#ENTITY#", entity_uri, query_clothing)
+        query = re.sub("#TYPE#", entity_id, query)
+        results = execute_sparql_query(query)
+        result = results['boolean']
+        if bool(result):
+            return True
+
+
+def get_vehicle_subcategories(entity_uri):
+    subcategorias_vehiculo = type_of_vehicle(entity_uri)
+    print(subcategorias_vehiculo)
+
+
+def type_of_vehicle(entity_uri):
+    types = {}
+    tipos_vehiculo = {"wd:Q1515493": "road",
+                      "wd:Q350783": "rail",
+                      "wd:Q16335899": "watercraft",
+                      "wd:Q11436": "aircraft"}
+
+    for entity_id, entity_name in tipos_vehiculo.items():
+        if is_vehicle_category(entity_uri, entity_id):
+            types.update({entity_id: 1})
+        else:
+            types.update({entity_id: 0})
+
+    return types
+
+
+def is_vehicle_category(entity_uri, entity_id):
+    for query_vehicle in [queries.query_tipo_vehiculo_1, queries.query_tipo_vehiculo_2, queries.query_tipo_vehiculo_3]:
+        query = re.sub("#ENTITY#", entity_uri, query_vehicle)
+        query = re.sub("#TYPE#", entity_id, query)
+        results = execute_sparql_query(query)
+        result = results['boolean']
+        if bool(result):
+            return True
+
+
 def get_plant_subcategories(entity_uri):
     subcategorias_planta = type_of_plant(entity_uri)
+    print(subcategorias_planta)
     subcategorias_vegetal = type_of_vegetable(entity_uri)
+    print(subcategorias_vegetal)
 
 
 def type_of_plant(entity_uri):
@@ -362,7 +429,7 @@ def type_of_plant(entity_uri):
 
 
 def type_of_vegetable(entity_uri):
-    types = None
+    types = {}
     tipos_vegetal = {"wd:Q20134": "leaf vegetable", "wd:Q20136": "root vegetable", "wd:Q244599": "bulb vegetable",
                      "wd:Q3314483": "fruits", "wd:Q12533094": "eggplant", "wd:Q145909": "legume"}
 
@@ -482,6 +549,10 @@ def get_subcategories(entity_uri, category_entity):
         return get_animal_subcategories(entity_uri)
     elif category_entity == entities.entity_plant:
         return get_plant_subcategories(entity_uri)
+    elif category_entity == entities.entity_vehicle:
+        return get_vehicle_subcategories(entity_uri)
+    elif category_entity == entities.entity_clothing:
+        return get_clothing_subcategories(entity_uri)
 
 
 loaded_lemmas = get_lemmas("lemmatization-es.txt")
