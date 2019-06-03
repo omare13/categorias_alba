@@ -417,8 +417,8 @@ class FrameControl(tk.Frame):
         self.boton.grid(row=0, column=0)
 
         # Definición de la barra de progreso
-        self.progreso = ttk.Progressbar(self, orient="horizontal", length=self.parent.ejecucion.palabras_totales,
-                                        mode="determinate", maximum=self.parent.ejecucion.palabras_totales)
+        self.progreso = ttk.Progressbar(self, orient="horizontal", length=self.root.ejecucion.palabras_totales,
+                                        mode="determinate", maximum=self.root.ejecucion.palabras_totales)
         self.progreso.grid(row=0, column=1)
 
         # Definición del botón step
@@ -440,6 +440,7 @@ class FrameControl(tk.Frame):
         self.progreso.step(1)
         self.root.display_estado()
         self.root.display_palabras()
+        self.root.display_tests()
 
 
 class VentanaEdicionPalabra(tk.Toplevel):

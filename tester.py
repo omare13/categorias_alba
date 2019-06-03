@@ -157,10 +157,16 @@ class EjecucionAnotacion:
                     # TODO - Incluir procesado de subcategorías --> Se deberían pasar los objetos según modelo datos?
                 self.tests[self.current_test].palabras[self.current_palabra].objeto = objeto
                 self.tests[self.current_test].palabras[self.current_palabra].estado = 1
+                # Se actualiza la palabra provisional
+                self.actualizar_palabras(etiqueta=objeto.etiqueta, estado=1, objeto=objeto)
             else:
                 self.tests[self.current_test].palabras[self.current_palabra].estado = 3
+                self.actualizar_palabras(etiqueta=palabra.texto, estado=3, objeto=None)
 
+        # Se actualizan las estadísticas de la ejecución
         self.estadistica_ejecucion()
+        # Actualizar el estado de los tests
+        self.actualizar_tests()
 
         print(self.current_palabra, "CURRENT")
         if len(self.tests[self.current_test].palabras) > self.current_palabra + 1:
