@@ -277,8 +277,8 @@ class FrameTests(tk.Frame):
 
     def actualizar_tests(self):
         for test in self.root.ejecucion.tests:
-            self.colorear_test(test.id, test.estado)
-            print(test.id, "TEST ID!")
+            self.colorear_test(test.index, test.estado)
+            print(test.index, "TEST INDEX!")
 
     def colorear_test(self, test_index, estado):
         if (estado == 0) or (estado is None):
@@ -875,7 +875,7 @@ class MultipleTreeIO(tk.Frame):
             valores.append({"etiqueta": self.tree.item(item)["values"][0], "uri": self.tree.item(item)["values"][1]})
         return {self.key: valores}
 
-    def seleccionar_item(self, event):
+    def seleccionar_item(self, evento):
         self.selected_items = self.tree.selection()
         self.selection.configure(state=tk.NORMAL)
         self.selection.delete(0, tk.END)

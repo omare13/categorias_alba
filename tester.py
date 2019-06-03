@@ -151,7 +151,7 @@ class EjecucionAnotacion:
                     labels = wikidata.get_labels(entity_uri)
                     # print(labels)
                     objeto = self.crear_objeto(etiqueta=etiqueta, etiquetas=labels, descripcion=descripcion,
-                                          categoria=self.entity, uri=entity_uri)
+                                               categoria=self.entity, uri=entity_uri)
                     subcategorias = wikidata.get_subcategories(entity_uri, self.entity)
                     print(subcategorias)
                     # TODO - Incluir procesado de subcategorías --> Se deberían pasar los objetos según modelo datos?
@@ -207,11 +207,13 @@ class EjecucionAnotacion:
                 if (palabra.estado == 1) or (palabra.estado == 3):
                     intermedio = True
             if inicial:
-                test.estado = 0
+                self.tests[test.index].estado = 0
             elif intermedio:
-                test.estado = 1
+                self.tests[test.index].estado = 1
+                print(self.tests[test.index].estado, "ESTADO 1!")
             else:
-                test.estado = 3
+                self.tests[test.index].estado = 3
+
 
 class Test:
     def __init__(self, linea, categoria, test_index, estado=None):
@@ -236,6 +238,7 @@ class Test:
             self.id = test
             self.estado = estado
             self.categoria = categoria
+            self.index = test_index
         else:
             print("N/A")
             self.estado = "N/A"
