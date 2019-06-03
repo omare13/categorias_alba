@@ -58,7 +58,6 @@ class Aplicacion(tk.Tk):
     def display_estado(self):
         self.frame_estado = FrameEstado(self)
         self.frame_estado.grid(row=0, column=2, sticky=tk.N+tk.E)
-        print("display estado")
 
     def display_control(self):
         self.frame_control = FrameControl(self)
@@ -66,7 +65,6 @@ class Aplicacion(tk.Tk):
 
     def display_edicion(self, palabra):
         self.edicion = VentanaEdicionPalabra(self, palabra)
-        print(palabra.__dict__)
         self.wait_window(self.edicion)
 
 
